@@ -7,6 +7,8 @@ const categories = [
   {id: 1, category: "React"},
   {id: 2, category: "JavaScript"},
   {id: 3, category: "Git"},
+  {id: 4, category: "Illustration"},
+  {id: 5, category: "Note"},
 ];
 
 export default function Notes() {

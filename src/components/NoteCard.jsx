@@ -4,7 +4,9 @@ export default function NoteCard({ note }) {
   const categoryColor = {
     React: "#61dafb",
     JavaScript: "#f7df1e",
-    Git: "#f05032"
+    Git: "#f05032",
+    Illustration: "#98fb98",
+    Note: "#ffd991"
   };
 
   return (

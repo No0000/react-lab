@@ -11,7 +11,7 @@ export default function Home() {
 
       <PageHeader
         title="React Lab"
-        description="Reactを学びながら作ったものや学習ログをまとめています。"
+        description="Reactを学びながら作ったものや学習ログ、趣味のイラストなどまとめているブログ的なものです"
       />
 
       <h2>Latest Notes</h2>
