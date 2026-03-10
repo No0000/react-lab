@@ -6,7 +6,7 @@ export default function NotFound() {
       <h1>404</h1>
       <p>ページが見つかりません。</p>
 
-      <Link to="/">
+      <Link to="/" className="back-button">
         ホームに戻る
       </Link>
     </div>
