@@ -9,6 +9,8 @@ import Projects from "./pages/Projects";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
+import Lab from "./pages/Lab";
+
 export default function App() {
   return (
     <div className="layout">
@@ -21,6 +23,7 @@ export default function App() {
           <Route path="/notes/:slug" element={<NoteDetail />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/about" element={<About />} />
+          <Route path="/lab" element={<Lab />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
