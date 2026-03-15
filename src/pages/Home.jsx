@@ -10,7 +10,7 @@ export default function Home() {
     <div className="container">
 
       <PageHeader
-        title="React Lab"
+        title="なおらぼ"
         description="Reactを学びながら作ったものや学習ログ、趣味のイラストなどまとめているブログ的なものです"
       />
 
