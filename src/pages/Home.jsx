@@ -1,10 +1,10 @@
-import { notes } from "../data/notes";
+import { allNotes } from "../data/allNotes";
 import NoteCard from "../components/NoteCard";
 import PageHeader from "../components/PageHeader";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  const latestNotes = [...notes].reverse().slice(0, 3);
+  const latestNotes = allNotes.slice(0, 3);
 
   return (
     <div className="container">

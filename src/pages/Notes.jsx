@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { notes } from "../data/notes";
+import { allNotes } from "../data/allNotes";
 import NoteCard from "../components/NoteCard";
 import PageHeader from "../components/PageHeader";
 
@@ -14,7 +14,8 @@ const categories = [
 export default function Notes() {
   const [searchText, setSearchText] = useState("");
   const [searchCategory, setSearchCategory] = useState("all");
-  const filteredNotes = notes.filter((note) => {
+
+  const filteredNotes = allNotes.filter((note) => {
     const matchText =
       note.title.toLowerCase().includes(searchText.toLowerCase()) ||
       note.summary.toLowerCase().includes(searchText.toLowerCase()) ||

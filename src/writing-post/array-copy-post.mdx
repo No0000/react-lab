@@ -1,0 +1,403 @@
+---
+title: 配列のコピー
+slug: array-copy-post
+date: "2026-03-12"
+category: React
+summary: なぜmap()やスプレッド構文をわざわざ使うのか？
+tags:
+  - JavaScript
+  - React
+---
+
+# わざわざ配列をコピーする理由
+
+Reactでよく配列をコピーするとき
+```jsx
+list.map()
+[...list]
+```
+
+とかってやりますよね。
+
+そもそも「a = b」ならaの値をコピーしたb、という事で別物になるんじゃないの？と思いますがどうやらプログラムの世界では違うようで...（もしかしたら数学の世界でも同じ考え方なのかも？）
+
+しかし、多くの天才たちが作り上げてきたプログラミング言語、何かそうすべき理由があったから今の形になっているはず！
+
+という事で自分なりに調べてきたました。
+
+間違っていたらごめんなさい！
+
+（この記事はプログラミング初学者が書いています。修正は逐一やっていくつもりですが、記事は僕が調査したものなので正しい内容とは限りません。ご了承ください。）
+
+## 実験してみよう
+
+配列を表示する際
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  return (
+    <ul>
+      {greetingList.map((g) => (
+        <li key={g.id}>
+          id：{g.id}
+          <br></br>
+          title：{g.title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+こんな感じでmap()メソッド使用して配列を表示させますよね。
+
+for文でもできるみたいですが、こちらの方が短くできるので好まれるようです。でもすごいですよね。今あるものを使い回すのではなく、コピーしてしまおうという考え方。私じゃ思いつきません。
+
+ちなみに結果はこんな感じ。
+
+```
+・id：0
+　title：Hello.
+・id：1
+　title：Nice to meet you.
+・id：2
+　title：Good evening.
+・id：3
+　title：See you again!
+```
+
+しっかり表示されましたね。じゃあこの配列をreverse()メソッドを使って逆順に並び替えてみましょう。
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  const reverseGreetingList = greetingList.reverse(); // <-追加
+
+  return (
+    <ul>
+      {reverseGreetingList.map((g) => (
+        <li key={g.id}>
+          id：{g.id}
+          <br></br>
+          title：{g.title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+greetingListにreverse()メソッドで逆順にしたものをreveseGreetingListに入れました。予想なら「See you again!」が最初に表示されると思いきや
+
+```md
+・id：0
+　title：Hello.
+・id：1
+　title：Nice to meet you.
+・id：2
+　title：Good evening.
+・id：3
+　title：See you again!
+```
+
+なんと結果はさっきと同じ！なんで？
+
+## スプレッド構文
+
+こういった時はスプレッド構文を使って別の配列にコピーしてからrevese()メソッドを使うと逆順になります。
+
+```jsx
+// スプレッド構文
+[...greetingList]
+```
+
+ではこれで逆順にしてみましょう。
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  const reverseGreetingList = [...greetingList].reverse(); // スプレッド構文
+
+  return (
+    <ul>
+      {reverseGreetingList.map((g) => (
+        <li key={g.id}>
+          id：{g.id}
+          <br></br>
+          title：{g.title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+結果
+
+```md
+・id：3
+　title：See you again!
+・id：2
+　title：Good evening.
+・id：1
+　title：Nice to meet you.
+・id：0
+　title：Hello.
+```
+
+ちゃんと逆になりましたね！めでたしめでたし...
+
+いやいや、ちょっと待ってください。なんでわざわざスプレッド構文でコピーしてから操作しないと反映されないのでしょうか。
+
+```jsx
+const reverseGreetingList = greetingList.reverse();
+const reverseGreetingList = [...greetingList].reverse();
+```
+
+この二つの何が違うんでしょうか。
+
+reverse()メソッドは元の配列を書き換えて逆順にします。つまりコピーしてない方は元のリストを直接書き換えていますが、だからと言って何も変わらないのはおかしいです。
+
+ちなみにconstをletに書き換えても逆順にはなりませんでした。
+
+### 追記3/15 reverse()メソッドの反映について
+
+今回の記述の仕方ではstateもpropsも使用していないため、コンポーネントが再レンダーされていないだけでした。
+表示のタイミングの関係で結果が反映されていないように見えただけのようです。
+
+```js
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+].reverse();
+```
+
+こうすれば逆順になった結果が表示されるようです。
+
+## メモリのアドレスとReactのルール
+
+Reactにはあるルールが存在します。それが
+
+>stateとpropsは直接更新してはいけない
+
+なぜかというとReactは参照の変化で更新を判断するからです。
+
+たとえば
+
+```jsx
+let a = 1;
+let b = a;
+
+b += 5;
+
+console.log(a);
+console.log(b);
+```
+
+結果は
+```md
+1
+6
+```
+
+こうなりますよね。
+
+bにはaを代入していますが、bに5を足してもaの結果は1のままです。当たり前ですよね。
+
+数値の1をbに代入しているのですからちゃんと動きます。
+
+じゃあgreetingListも同じように別の変数に代入しているのだから動くはずです。
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  const reverseGreetingList = greetingList.reverse();
+```
+
+でも結果は逆順にはなりませんでした。理由は配列の代入は値を渡しているのではなく、参照を渡しているからなのです！
+
+高校生の時C言語の授業で先生がそんなこと言ってたな〜と思い出しました。
+
+ハードウェアの内容になりますが、宣言された変数はメモリに格納されるという内容でした。
+
+百聞は一見にしかず、という事で実験してみましょう。残念ながらJavaScriptにはメモリのアドレスを直接確認する方法がないらしいので（もしかしたらあるのかも）C言語でやってみましょう。
+
+```c
+#include <stdio.h>
+
+int main() {
+
+    printf("===== 普通の変数 =====\n");
+
+    int a = 10;
+    int b = a;   // 値コピー
+
+    printf("aの値: %d\n", a);
+    printf("bの値: %d\n", b);
+
+    printf("aのアドレス: %p\n", &a);
+    printf("bのアドレス: %p\n", &b);
+
+    printf("\n");
+
+    printf("===== 配列 =====\n");
+
+    int arr1[3] = {1, 2, 3};
+
+    // 配列の先頭アドレスをポインタに代入
+    int *arr2 = arr1;
+
+    printf("arr1のアドレス: %p\n", arr1);
+    printf("arr2のアドレス: %p\n", arr2);
+
+    printf("arr1[0]: %d\n", arr1[0]);
+    printf("arr2[0]: %d\n", arr2[0]);
+
+    printf("\n");
+
+    printf("arr2から値を変更\n");
+
+    arr2[0] = 100;
+
+    printf("arr1[0]: %d\n", arr1[0]);
+    printf("arr2[0]: %d\n", arr2[0]);
+
+    return 0;
+}
+```
+
+結果はこちら
+
+```md
+===== 普通の変数 =====
+aの値: 10
+bの値: 10
+aのアドレス: 0x50a2f0
+bのアドレス: 0x50a328
+
+===== 配列 =====
+arr1のアドレス: 0x50a360
+arr2のアドレス: 0x50a360
+arr1[0]: 1
+arr2[0]: 1
+
+arr2から値を変更
+arr1[0]: 100
+arr2[0]: 100
+```
+
+int *arr2 = arr1;はarr1の先頭のメモリアドレスを渡しています（配列で言う0番目）。
+
+aとbは違うアドレスですがarr1とarr2は同じアドレスですね。さらにarr2の0番目を100に変更するとarr1の0番目も100になりました。
+
+だからなんだよ？そもそも同じところを見るように渡しているんだからそうなるだろ。
+
+そりゃそうですよね。でも他の言語も同じようになっているのです。JavaScriptも例外ではありません。まるで b = aのように値をコピーしているように見せかけて配列はアドレスをコピーしているだけなのです。
+
+紛らわしいですよね。C言語では*で、Rustでは&を使用するように記述するので普通の代入とは違うように判断できますが、JavaScriptでは書き方に差異がありません。
+
+算数の書き方が身についているので「メモリのアドレスを渡す...?」となってしまいますが、プログラムの世界では「配列のコピーはメモリのアドレスを渡すもんなんだよ！」ということなんでしょうね。
+
+じゃあなんで配列（リストなども含め）はアドレスを渡すのでしょうか。
+
+今回の実験で使った配列の中身は少ないのであまり問題にはなりませんが、1000万件のデータが格納されている配列があったとしたら。それを何回もコピーするようなプログラムだとメモリの消費がやばいことになります。
+
+そんな状況ではコピーが簡単にできないのです。だからメモリアドレスを渡して、参照させるようにしているようです。
+
+必要な時にだけ完全コピーをとって、それ以外は同じ場所で参照させるようにする。昔の人は考えましたね！
+
+さて、ここまで話してきて
+
+「だからなんだよ」
+
+と思うかもしれません。一旦整理しましょう。
+
+>配列のコピーはメモリのアドレスを渡す
+
+そして先ほどのReactのルールを思い出してください。
+
+>stateとpropsは直接更新してはいけない
+
+もっと砕いた言い方というか、誤解を恐れない言い方をするのであれば「元のデータを変えてはいけない」のです（場合によってはあるかもしれませんが...）。
+
+それはなぜか
+
+>Reactは参照の変化で更新を判断する
+
+arr1とarr2は同じアドレスでしたよね？React的にはarr1 === arr2と判断し、「なんだ、何も変わってないじゃないか」となりそのまま変更しないのです。
+
+Reactはarr2の中身が100になろうとメモリアドレスの変化がなければ同じプログラムとして判断します。中身は見ないのです。
+
+ではスプレッド構文はどうでしょう。
+
+```jsx
+const reverseGreetingList = [...greetingList].reverse();
+```
+
+これはgreetingListの中身を新たな配列にコピーしています。こうなればgreetingListとreveseGreetingListのアドレスは別のものとなります。
+
+Reactは「お、メモリに変更があったな。ということは違う内容になってるから反映させるか！」となり結果がreverse()メソッドを適用したものになるのです。
+
+ちなみに、これはReactの話であってJavaScript的にはわざわざスプレッド構文やmap()メソッドを使わなくても良いみたいです（破壊的メソッドというらしい）。
+
+### 追記3/15 破壊的メソッド
+
+破壊的メソッドにはいくつか種類があります。
+
+```js
+reverse // 配列を逆順にする
+sort // 配列を並び替える
+push // 配列に要素を
+splice // 配列の要素を追加、削除、置換する
+```
+
+React的には非破壊メソッドが好まれるようです。
+
+```js
+map // 配列を変換して新しい配列を作成する
+filter // 条件に合う要素を抽出して新しい配列を作成する
+slice // 配列の要素を抽出する
+```
+
+長々話しましたが、Reactでは
+
+>配列を書き換えたかったら直接変えるんじゃなくて、一旦中身のコピーをとってからいじくるんだな
+
+程度の認識でいいんじゃないんですかね？
+
+もしかしたらこれを理解しているとシャローコピーとかに活かせるかもしれませんね（多分）。
+
+### 追記3/15 メモリのアドレスについて
+
+配列のコピーはメモリのアドレスを渡すという書き方をしました。C言語ではそれで良いのですが、JavaScriptでは正確には「参照」がコピーされるようです。
+
+
+
+配列のコピーについての記事を書いてみました。

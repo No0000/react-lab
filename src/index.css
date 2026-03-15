@@ -108,11 +108,16 @@ button {
 }
 
 .note-shell {
-  max-width: 1400px;   /* 全体幅を広げる */
+  max-width: 1300px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 900px);
   gap: 40px;
+}
+
+.note-shell-single {
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .note-detail {
@@ -160,6 +165,10 @@ button {
 
 .toc-item-sub {
   margin-left: 12px;
+}
+
+.toc-item-sub-deep {
+  margin-left: 24px;
 }
 
 .note-toc a {

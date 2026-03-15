@@ -1,76 +1,34 @@
 import { useState } from "react";
 
-const originalRecipeList = [
-  {
-    id: 0,
-    title: "vegetable",
-    ingredients: ["tomato", "lettuce", "ham"],
-  },
-  {
-    id: 1,
-    title: "fruit",
-    ingredients: ["cream", "orange", "strawberry"],
-  },
-];
+export default function ShallowCopyDemo() {
 
-export default function Test() {
-  const [changedRecipeList, setChangedRecipeList] = useState(originalRecipeList);
+  const [list, setList] = useState([
+    { id: 0, name: "A" },
+    { id: 1, name: "B" }
+  ]);
 
-  function handleRemoveIngredient(recipeId, ingredient) {
-    // 配列だけコピーしている
-    const nextList = [...changedRecipeList];
+  function change() {
 
-    // 中のオブジェクトは元と同じ参照
-    const recipe = nextList.find((item) => item.id === recipeId);
+    // シャローコピー
+    const next = [...list];
 
-    // ingredients配列も同じ参照なので、
-    // 直接変更すると元のレシピにも影響する
-    recipe.ingredients.splice(recipe.ingredients.indexOf(ingredient), 1);
+    // オブジェクトを書き換える
+    next[0].name = "changed";
 
-    setChangedRecipeList(nextList);
+    setList(next);
   }
 
   return (
     <div>
-      <h3>元のレシピ</h3>
-      <ul>
-        {originalRecipeList.map((recipe) => (
-          <li key={recipe.id}>
-            id：{recipe.id}
-            <br />
-            title：{recipe.title}
-            <br />
-            ingredients：
-            {recipe.ingredients.map((ingredient) => (
-              <button
-                key={ingredient}
-                style={{ marginLeft: "10px" }}
-                onClick={() => handleRemoveIngredient(recipe.id, ingredient)}
-              >
-                {ingredient}
-              </button>
-            ))}
-          </li>
-        ))}
-      </ul>
 
-      <h3>書き換えたレシピ</h3>
-      <ul>
-        {changedRecipeList.map((recipe) => (
-          <li key={recipe.id}>
-            id：{recipe.id}
-            <br />
-            title：{recipe.title}
-            <br />
-            ingredients：
-            {recipe.ingredients.map((ingredient) => (
-              <span key={ingredient} style={{ marginLeft: "10px" }}>
-                ・{ingredient}
-              </span>
-            ))}
-          </li>
-        ))}
-      </ul>
+      <button onClick={change}>
+        変更する
+      </button>
+
+      <pre style={{ marginTop: "16px" }}>
+        {JSON.stringify(list, null, 2)}
+      </pre>
+
     </div>
   );
 }
