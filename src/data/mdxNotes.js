@@ -2,10 +2,32 @@ const mdxFiles = import.meta.glob("../content/notes/*.mdx", {
   eager: true,
 });
 
+const rawMdxFiles = import.meta.glob("../content/notes/*.mdx", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+});
+
+function stripTags(value) {
+  return value.replace(/<[^>]+>/g, "").trim();
+}
+
+function extractTocFromSource(source) {
+  const headingPattern = /<h([1-3])\s+id="([^"]+)">([\s\S]*?)<\/h\1>/g;
+
+  return Array.from(source.matchAll(headingPattern)).map((match) => ({
+    id: match[2],
+    text: stripTags(match[3]),
+    level: Number(match[1]),
+  }));
+}
+
 export const mdxNotes = Object.entries(mdxFiles)
   .map(([path, mod], index) => {
     const metadata = mod.metadata || {};
-    const toc = mod.toc || [];
+    const rawSource = rawMdxFiles[path] || "";
+    const extractedToc = extractTocFromSource(rawSource);
+    const toc = extractedToc.length > 0 ? extractedToc : mod.toc || [];
 
     return {
       id: index + 1,

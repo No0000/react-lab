@@ -1,31 +1,9 @@
-import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { mdxNotes } from "../data/mdxNotes";
 
 export default function NoteDetail() {
   const { slug } = useParams();
   const note = mdxNotes.find((item) => item.slug === slug);
-  const articleRef = useRef(null);
-  const [tocItems, setTocItems] = useState([]);
-
-  useEffect(() => {
-    if (!note || !articleRef.current) {
-      setTocItems([]);
-      return;
-    }
-
-    const headings = Array.from(
-      articleRef.current.querySelectorAll("h1[id], h2[id], h3[id]")
-    );
-
-    setTocItems(
-      headings.map((heading) => ({
-        id: heading.id,
-        text: heading.textContent ?? "",
-        level: Number(heading.tagName.replace("H", "")),
-      }))
-    );
-  }, [note, slug]);
 
   if (!note) {
     return (
@@ -39,7 +17,7 @@ export default function NoteDetail() {
   }
 
   const MdxComponent = note.Component;
-
+  const tocItems = note.toc || [];
   const hasToc = tocItems.length > 0;
   const getTocItemClassName = (level) => {
     if (level === 3) {
@@ -80,7 +58,7 @@ export default function NoteDetail() {
             </span>
           </p>
 
-          <div className="markdown-body" ref={articleRef}>
+          <div className="markdown-body">
             <MdxComponent />
           </div>
 
