@@ -12,10 +12,23 @@ function stripTags(value) {
   return value.replace(/<[^>]+>/g, "").trim();
 }
 
+function normalizeRawSource(source) {
+  if (typeof source === "string") {
+    return source;
+  }
+
+  if (source && typeof source.default === "string") {
+    return source.default;
+  }
+
+  return "";
+}
+
 function extractTocFromSource(source) {
   const headingPattern = /<h([1-3])\s+id="([^"]+)">([\s\S]*?)<\/h\1>/g;
+  const normalizedSource = normalizeRawSource(source);
 
-  return Array.from(source.matchAll(headingPattern)).map((match) => ({
+  return Array.from(normalizedSource.matchAll(headingPattern)).map((match) => ({
     id: match[2],
     text: stripTags(match[3]),
     level: Number(match[1]),
@@ -25,7 +38,7 @@ function extractTocFromSource(source) {
 export const mdxNotes = Object.entries(mdxFiles)
   .map(([path, mod], index) => {
     const metadata = mod.metadata || {};
-    const rawSource = rawMdxFiles[path] || "";
+    const rawSource = rawMdxFiles[path];
     const extractedToc = extractTocFromSource(rawSource);
     const toc = extractedToc.length > 0 ? extractedToc : mod.toc || [];
 
