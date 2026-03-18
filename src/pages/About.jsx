@@ -49,6 +49,8 @@ export default function About() {
               <br></br>
               もしくはゲームで飯を食べられるようになること！
               <br></br>
+              パソコンはMacbook proのM1チップ、メモリ8GB、SSD256GBで正直メモリも容量もギリギリ！
+              <br></br>
               そんな感じで日々の学んだことを書いてます
             </p>
           </div>

@@ -16,7 +16,6 @@ export default function Home() {
         description="フロントエンドエンジニアに転職を目指して現在無職で時間がある今のうちにやりたいことやる人生最後の夏休みをまとめたブログです。"
       />
 
-
       <h2>Latest Notes</h2>
 
       <div className="notes-grid">

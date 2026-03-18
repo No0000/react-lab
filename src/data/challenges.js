@@ -9,9 +9,9 @@ export const challenges = [
   {
     id: 2,
     name: "イラスト",
-    totalHours: 0,
+    totalHours: 2,
     goalHours: 1000,
-    comment: "サイトのマスコットを製作中",
+    comment: "久しぶりに描いた",
   },
   {
     id: 3,
