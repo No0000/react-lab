@@ -7,11 +7,23 @@ export default function TalkCharacter({ children }) {
         gap: "12px",
         margin: "20px 0",
       }}
-    >
+      >
+      <img
+        style={{
+          transform: "scaleX(-1)",
+          width: "70px",
+          height: "70px",
+          borderRadius: "999px",
+          objectFit: "cover",
+          flexShrink: 0,
+        }}
+        src="/favicon.png"
+        alt="character-image"
+      />
       <p
         style={{
           margin: 0,
-          padding: "12px 16px",
+          padding: "0px 16px",
           border: "2px solid black",
           borderRadius: "20px",
           backgroundColor: "#fff",
@@ -22,17 +34,6 @@ export default function TalkCharacter({ children }) {
         {children}
       </p>
 
-      <img
-        style={{
-          width: "70px",
-          height: "70px",
-          borderRadius: "999px",
-          objectFit: "cover",
-          flexShrink: 0,
-        }}
-        src="/favicon.png"
-        alt="character-image"
-      />
     </div>
   );
 }
