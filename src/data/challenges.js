@@ -2,9 +2,9 @@ export const challenges = [
   {
     id: 1,
     name: "プログラミング",
-    totalHours: 0,
+    totalHours: 6.5,
     goalHours: 1000,
-    comment: "MDX対応と記事整備を進め中",
+    comment: "シャローコピーにつて記事を書いた",
   },
   {
     id: 2,
