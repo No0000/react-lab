@@ -1,0 +1,528 @@
+import TalkCharacter from '../../components/article/TalkCharacter';
+import ArticleInternalLinkCard from '../../components/article/ArticleInternalLinkCard';
+import ArticleExternalLinkCard from '../../components/article/ArticleExternalLinkCard';
+
+export const metadata = {
+  title: "配列のコピー",
+  slug: "shallow-copy-post",
+  date: "2026-03-19",
+  category: "JavaScript",
+  summary: "シャローコピーって何？",
+  tags: ["JavaScript", "React", "Shallow Copy"],
+};
+
+export const toc = [
+  { id: "what-is-shallow-copy", text: "シャローコピーって何？", level: 1 },
+  { id: "try-it-out", text: "実際にやってみよう", level: 2 },
+  { id: "notes", text: "備考", level: 3 },
+  { id: "questions-about-shallow-copy", text: "シャローコピーの疑問", level: 2 },
+  {
+    id: "destructive-methods-vs-direct-mutation",
+    text: "オブジェクトを直接書き換えるのと破壊的メソッドはどう違うの？",
+    level: 2,
+  },
+  { id: "destructive-methods-note", text: "3/19追記 破壊的メソッドの参照について", level: 3 },
+  { id: "what-shallow-copy-means", text: "結局シャローコピーとはなんなのか？", level: 2 },
+  { id: "reverse-note", text: "追記3/19 元の配列とrevese()メソッド", level: 3 },
+  { id: "shallow-copy-is-tricky", text: "シャローコピーって面倒だな", level: 2 },
+];
+
+この記事は自分がわからなくなった時のためのメモみたいなものです。
+
+内容については間違っている箇所は随時更新しますが、正しい内容とは限りませんのでご了承ください。
+
+
+<h1 id="what-is-shallow-copy">シャローコピーって何？</h1>
+
+英語でshallow copy。意味は浅いコピー。
+
+逆にdeep copy（ディープコピー）もあるみたい。
+
+コピーに浅いも深いもあるってよくわかりませんね。コピーはコピーでしょと思うのですが、配列のコピーという記事でまとめたように
+
+```jsx
+const a = 1;
+const b = a;
+```
+
+という変数の代入と
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+const reverseGreetingList = [...greetingList];
+```
+
+オブジェクトの代入は違うことをしているようです↓。
+
+<ArticleInternalLinkCard
+  to="/notes/array-copy-post"
+  title="配列のコピー"
+  description="なぜ map() やスプレッド構文をわざわざ使うのか？"
+  label="Related Note"
+/>
+
+<h2 id="try-it-out">実際にやってみよう</h2>
+
+よく使うスプレッド構文。
+
+```js
+[...list]
+```
+
+これは1階層しかコピーできないのです。それより深い部分は参照となります。
+
+こんなプログラムがあるとしましょう。
+
+```jsx
+const original = [
+  { name: "A" },
+  { name: "B" }
+];
+export default function Test() {
+  const copy = [...original];
+  copy[0].name = "Z";
+
+  return (
+    <>
+      {original.map(o => (
+        <p>oliginal : {o.name}</p>
+      ))}
+      {copy.map(c => (
+        <p>copy : {c.name}</p>
+      ))}      
+    </>
+  );
+}
+```
+
+配列のコピーという記事でオブジェクトのコピーは参照の場所を渡しているというふうに書きました。となるとoriginal[0].nameとcopy[0].nameは同じ場所を参照しているので、copyを直接変えるとoriginalも変わるということになります。
+
+結果
+```md
+oliginal : Z
+oliginal : B
+copy : Z
+copy : B
+```
+
+確かにcopyしか変えていないのにoriginalもZになりましたね。
+
+そう、これがシャローコピー。
+
+スプレッド構文は「新しい配列」を作りますが、中の要素（オブジェクトや配列）は同じ参照になります。
+
+<TalkCharacter>
+ちょっとまてよ。
+
+前の記事で書いた配列は元のデータと書き換えたデータどちらも別の表示結果になっただろ。
+
+あと階層ってなんだよ。
+</TalkCharacter>
+
+<h3 id="notes">備考</h3>
+もし変えるのであれば
+
+```js
+copy[0] = {name: "Z"};
+```
+
+とすることでcopyだけ変わり、originalはAのままになります。
+
+<h2 id="questions-about-shallow-copy">シャローコピーの疑問</h2>
+
+ここで疑問が出てきましたので順番にやっていきましょう。
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  const reverseGreetingList = [...greetingList].reverse(); // スプレッド構文
+
+  return (
+    <ul>
+      {reverseGreetingList.map((g) => ( // 逆順の配列を表示
+        <li key={g.id}>
+          id：{g.id}
+          <br></br>
+          title：{g.title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+これの実行結果はrevese()メソッドを使っているので逆順で表示されました。
+
+```md
+・id：3
+　title：See you again!
+・id：2
+　title：Good evening.
+・id：1
+　title：Nice to meet you.
+・id：0
+　title：Hello.
+```
+
+では元の配列も表示してみましょう。
+
+```jsx
+const greetingList = [
+  {id:0, title: "Hello."},
+  {id:1, title: "Nice to meet you."},
+  {id:2, title: "Good evening."},
+  {id:3, title: "See you again!"}
+];
+
+export default function Test() {
+  const reverseGreetingList = [...greetingList].reverse(); // スプレッド構文
+
+  return (
+    <ul>
+      {greetingList.map((g) => ( // 元の配列を表示
+        <li key={g.id}>
+          id：{g.id}
+          <br></br>
+          title：{g.title}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+こうするとそのまま表示されます。
+
+```md
+・id：0
+　title：Hello.
+・id：1
+　title：Nice to meet you.
+・id：2
+　title：Good evening.
+・id：3
+　title：See you again!
+```
+
+でも今回のプログラムでは結果はどちらも一緒でしたよね？
+
+```jsx
+const original = [
+  { name: "A" },
+  { name: "B" }
+];
+export default function Test() {
+  const copy = [...original];
+  copy[0].name = "Z";
+
+  return (
+    <>
+      {original.map(o => (
+        <p>{o.name}</p>
+      ))}
+      {copy.map(c => (
+        <p>{c.name}</p>
+      ))}      
+    </>
+  );
+}
+```
+
+結果
+
+```md
+oliginal : Z
+oliginal : B
+copy : Z
+copy : B
+```
+
+revese()メソッドで元の配列を弄ったのに元の配列はちゃんと表示されています。
+
+僕は思いました。
+
+<TalkCharacter>
+シャローコピーの境界線がわからん。
+</TalkCharacter>
+
+元のデータの結果が変わるものとそうでないもの、違いはなんなのでしょうか？
+
+<h2 id="destructive-methods-vs-direct-mutation">オブジェクトを直接書き換えるのと破壊的メソッドはどう違うの？</h2>
+
+二つのプログラムの違いはオブジェクトを直接書き換えたかそうでないかです。
+
+一見するとrevese()メソッド（破壊的メソッド）はオブジェクトを書き換えているように見えますが、どうやら違うようです。
+
+まだよくわからないので色々自分なりに調査してみました。
+
+<ArticleExternalLinkCard
+  href="https://www.test-king.com/blog/efficient-methods-for-copying-arrays-by-value-in-javascript/?utm_source=chatgpt.com"
+  title="TEST KING"
+  description="英語の記事です。スプレッド構文では新しい配列は作られる一方で、中の要素は同じ参照になる点が整理されています。"
+  domainLabel="External Article"
+/>
+
+こちらのサイトではシャローコピーについて詳しく書かれています。
+
+Using the Spread Operator（スプレッド演算子の使用）という欄でスプレッド構文は新しい配列は作られるが、中の要素は同じ参照（僕の意訳）ということが書かれています。
+
+<ArticleExternalLinkCard
+  href="https://stackoverflow.com/questions/66739872/confused-about-shallow-copy-of-array-using-slice-js?utm_source=chatgpt.com"
+  title="Stack Overflow"
+  description="英語の Q&A です。slice() やシャローコピーの挙動について、図付きで議論されていて理解の補助になります。"
+  domainLabel="External Q&A"
+/>
+
+こちらのサイトは今回の僕の疑問と同じような内容を質問されている方の質問フォームです。
+
+この質問フォームではslice()メソッド（破壊的メソッド）とシャローコピーについて質問をされています。図もあるのでわかりやすいです。
+
+<TalkCharacter>
+つまりは？
+</TalkCharacter>
+
+わかりやすく中身をobjAとobjBという形にしてみましょう。
+
+[...original]で展開されているのはオブジェクトの参照になります。
+
+```js
+copy = [...original]
+```
+
+これは
+
+```js
+original = [ objA, objB ]
+copy = [ objA, objB ]
+```
+
+ということ。
+
+それをrevese()メソッドで逆順にしてみましょう。
+
+```js
+const copy = [...original];
+copy.reverse();
+```
+
+これをobjAとobjBで表すと
+
+```js
+original = [ objA, objB ]
+copy = [ objB, objA ]
+```
+
+と参照の位置を入れ替えただけになります。
+
+ではオブジェクトの中身を書き換える記述ではどうなるのでしょうか。
+
+```js
+copy[0].name = "Z";
+```
+
+この記述は
+
+```js
+objA.name = "Z"
+```
+
+をしていることになります。
+objAはoriginalも参照しているので
+
+```js
+original[0].name = copy[0].name = objA.name = "Z"
+
+// もう少し具体的に
+original = [ objA(Z), objB ]
+copy = [ objA(Z), objB ]
+```
+
+こんな形で中身が入れ替わってしまうのです。
+
+共通のobjAの中身を書き換えてしまったがためにこのようなことが起こってしまうのです。
+
+この章の冒頭で「二つのプログラムの違いはオブジェクトを直接書き換えたかそうでないかです。」と書きましたが、破壊的メソッドは参照を入れ替えたり追加したりするだけで中身の変更をしていません。だから違う結果になりますが、参照元を書き換えてしまうとそれを元にしてしまうので同じ結果になってしまうのです。
+
+<h3 id="destructive-methods-note">3/19追記 破壊的メソッドの参照について</h3>
+破壊的メソッドは参照を入れ替えたり追加したりするだけで中身の変更をしていません。
+
+と記載しましたが正しくは
+
+破壊的メソッドは配列そのもの（並びや要素）を変更しますが、中に入っているオブジェクトの中身までは変更しません。
+
+
+まるで伝言ゲームのようですね。
+
+備考で書いた
+
+```js
+copy[0] = {name: "Z"};
+```
+
+これがちゃんと反映されるのはcopy[0]にobjCという別の参照を渡すことでoriginalには影響が出ないようになっていたのです。
+
+```js
+copy = [ objC(元objAだった場所), objB ]
+```
+
+<h2 id="what-shallow-copy-means">結局シャローコピーとはなんなのか？</h2>
+
+一旦スプレッド構文に戻ってみましょう。
+
+オブジェクトのない普通の配列をそのまま表示するプログラムを書いてました。
+
+```jsx
+const original = [1, 2, 3];
+export default function Test() {
+  const copy = [...original];
+  copy[0] = "ZZZ";
+
+  return (
+    <>
+      {original.map(o => (
+        <p>oliginal : {o}</p>
+      ))}
+      {copy.map(c => (
+        <p>copy : {c}</p>
+      ))}      
+    </>
+  );
+}
+```
+
+結果はこちら
+
+```md
+oliginal : 1
+oliginal : 2
+oliginal : 3
+copy : ZZZ
+copy : 2
+copy : 3
+```
+
+当然こうなります。
+
+書き換えたcopy[0]だけがZZZとなりoriginal[0]は1のままです。
+
+次に2次元配列のプログラムを書いてみました。（本来はkeyなどを設けた方が良いのですが、省略します）
+
+```jsx
+const original = [[1,2,3], [4,5,6]];
+export default function Test() {
+  const copy = [...original];
+  copy[0][1] = "ZZZ";
+
+  return (
+    <>
+      {original.map(o => (
+        <>
+        {o.map(i => (
+          <p>oliginal : {i}</p> 
+        ))}
+        </>
+      ))}
+      {copy.map(o => (
+        <>
+        {o.map(i => (
+          <p>copy : {i}</p> 
+        ))}
+        </>
+      ))}
+    </>
+  );
+}
+```
+
+結果はこうなりました。
+
+```md
+oliginal : 1
+oliginal : ZZZ
+oliginal : 3
+oliginal : 4
+oliginal : 5
+oliginal : 6
+copy : 1
+copy : ZZZ
+copy : 3
+copy : 4
+copy : 5
+copy : 6
+```
+
+copyの[0][1]番目（元は2）の部分をZZZに書き換えるとoriginalもZZZになりました。
+
+最初に「スプレッド構文は1階層しかコピーしない」と書きました。オブジェクトのコピーと同じように中身が共有されているんですね。
+
+実際はこんな感じでコピーされています。
+
+```js
+original = [ arrA, arrB, arrC ]
+copy = [ arrA, arrB, arrC ]
+```
+
+オブジェクトの場合もこんな感じでしたね。
+
+```js
+original = [ objA, objB ]
+copy = [ objA, objB ]
+```
+
+もっと中身もコピーしたい場合、ディープコピーを使います。
+
+```js
+const copy = original.map(arr => [...arr]);
+copy[0][1] = "ZZZ";
+```
+
+こうすることで外も中も新しい配列になり元の配列には影響が出ません。
+
+<h3 id="reverse-note">追記3/19 元の配列とrevese()メソッド</h3>
+
+revese()メソッドで元の配列を弄ったのに元の配列はちゃんと表示されています。
+
+このように記述しましたが
+
+reverse()は呼び出した配列を変更する破壊的メソッドです。
+
+ただし今回のコードでは
+
+```js
+const reverseGreetingList = [...greetingList].reverse();
+```
+
+と「コピーした配列」に対してreverse()を使っているため、
+元のgreetingListは変更されません。
+
+コピーを逆順にしているだけでした。
+
+<h2 id="shallow-copy-is-tricky">シャローコピーって面倒だな</h2>
+
+先ほどリンクを載せたTEST KINGのConsiderations for Shallow Copying（浅いコピーに関する考慮事項）の欄でこのようなことが書かれています。
+
+「浅いコピー方法は、一般的に深いコピーよりも高速で、必要なメモリも少ないため、パフォーマンスが優先され、データ構造が単純なシナリオに最適です。」
+
+私は勘違いをしていました。
+
+シャローコピーは不完全なコピーでいちいち中身を参照ではなく値をコピーする手間をかける必要があるものだと思っていました。
+
+本当は毎回ディープコピー（完全コピー）をするとパフォーマンスの低下につながります。
+
+手書きでお知らせを人数分書いて配布するより一枚だけ書いて掲示板に貼ってみてもらった方が楽ですよね？
+
+そんな感じでシャローコピーはプログラマーが軽くて速いコピー手段として選択できる方法の一つなのです。
+
+中身を変えたければディープコピーを、順番を変える程度ならシャローコピーを、そんな感じで使い分けましょう。

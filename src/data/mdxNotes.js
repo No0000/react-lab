@@ -35,12 +35,30 @@ function extractTocFromSource(source) {
   }));
 }
 
+function extractTocFromComponentSource(component) {
+  const componentSource = String(component ?? "");
+  const headingPattern =
+    /jsx[s]?\("h([1-3])",\s*\{id:"([^"]+)",children:"([^"]+)"\}\)/g;
+
+  return Array.from(componentSource.matchAll(headingPattern)).map((match) => ({
+    id: match[2],
+    text: match[3].trim(),
+    level: Number(match[1]),
+  }));
+}
+
 export const mdxNotes = Object.entries(mdxFiles)
   .map(([path, mod], index) => {
     const metadata = mod.metadata || {};
     const rawSource = rawMdxFiles[path];
     const extractedToc = extractTocFromSource(rawSource);
-    const toc = extractedToc.length > 0 ? extractedToc : mod.toc || [];
+    const fallbackToc = extractTocFromComponentSource(mod.default);
+    const toc =
+      extractedToc.length > 0
+        ? extractedToc
+        : fallbackToc.length > 0
+          ? fallbackToc
+          : mod.toc || [];
 
     return {
       id: index + 1,

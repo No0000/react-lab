@@ -1,38 +1,25 @@
-export default function TalkCharacter({ children }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-end",
-        gap: "12px",
-        margin: "20px 0",
-      }}
-    >
-      <p
-        style={{
-          margin: 0,
-          padding: "12px 16px",
-          border: "2px solid black",
-          borderRadius: "20px",
-          backgroundColor: "#fff",
-          maxWidth: "420px",
-          lineHeight: 1.6,
-        }}
-      >
-        {children}
-      </p>
+// const original = [1, 2, 3];
+const original = [[1,2,3], [4,5,6]];
+export default function Test() {
+  const copy = [...original];
+  copy[0][1] = "ZZZ";
 
-      <img
-        style={{
-          width: "70px",
-          height: "70px",
-          borderRadius: "999px",
-          objectFit: "cover",
-          flexShrink: 0,
-        }}
-        src="/favicon.png"
-        alt="character-image"
-      />
-    </div>
+  return (
+    <>
+      {original.map(o => (
+        <>
+        {o.map(i => (
+          <p>oliginal : {i}</p> 
+        ))}
+        </>
+      ))}
+      {copy.map(o => (
+        <>
+        {o.map(i => (
+          <p>copy : {i}</p> 
+        ))}
+        </>
+      ))}
+    </>
   );
 }

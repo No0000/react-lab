@@ -1,11 +1,5 @@
-import TalkCharacter from "../lab/shallowCopyTest";
+import Test from "../lab/shallowCopyTest";
 
 export default function Lab() {
-  return (
-    <TalkCharacter>
-      aaaaaaaaa
-      aaaaaaaaa<br></br>
-      aaaa
-    </TalkCharacter>
-  );
+  return <Test />
 }
