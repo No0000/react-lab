@@ -40,18 +40,11 @@ export default function Notes() {
         placeholder="検索..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "12px",
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          marginBottom: "24px",
-          fontSize: "16px",
-        }}
+        className="notes-search-input"
       />
 
 
-      <div style={{ display: "flex", gap: "8px", marginBottom: "24px", flexWrap: "wrap" }}>
+      <div className="notes-filter-row">
         <button
           className={searchCategory === "all" ? "category-button active" : "category-button"}
           onClick={() => setSearchCategory("all")}

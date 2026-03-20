@@ -34,8 +34,8 @@ export default function About() {
       <div>
         
         <h2>私について</h2>
-        <div style={{display: "flex"}}>
-          <div style={{paddingRight: "40px"}}>
+        <div className="about-profile">
+          <div className="about-profile-text">
             <ul>
               <li>1999年6月22日生まれの{getAge()}歳</li>
               <li>高校、大学で情報系を学んだのにプログラミング初心者</li>
@@ -44,23 +44,23 @@ export default function About() {
               <li>なんとなくでウェブサイトを開設</li>
             </ul>
 
-            <p style={{paddingTop: "20px"}}>
-              夢はフロントエンジニアになること！
-              <br></br>
-              もしくはゲームで飯を食べられるようになること！
-              <br></br>
-              パソコンはMacbook proのM1チップ、メモリ8GB、SSD256GBで正直メモリも容量もギリギリ！
-              <br></br>
-              そんな感じで日々の学んだことを書いてます
-            </p>
           </div>
 
           <img 
-            style={{height: "150px", borderRadius: "100%"}}
+            className="about-profile-image"
             src="naolabs-main.PNG"
             alt="naolabs-main"
           />
         </div>
+          <p style={{paddingTop: "20px"}}>
+            夢はフロントエンジニアになること！
+            <br></br>
+            もしくはゲームで飯を食べられるようになること！
+            <br></br>
+            パソコンはMacbook proのM1チップ、メモリ8GB、SSD256GBで正直メモリも容量もギリギリ！
+            <br></br>
+            そんな感じで日々の学んだことを書いてます
+          </p>
       </div>
 
     </div>

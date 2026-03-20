@@ -15,27 +15,21 @@ export default function NoteCard({ note }) {
       style={{ textDecoration: "none", color: "inherit" }}
     >
       <article className="note-card">
-        <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
+        <p className="note-card-meta">
           <span
-            style={{
-              display: "inline-block",
-              padding: "4px 8px",
-              borderRadius: "999px",
-              backgroundColor: categoryColor[note.category] || "#eee",
-              fontSize: "12px",
-              marginRight: "8px",
-            }}
+            className="note-card-category"
+            style={{ backgroundColor: categoryColor[note.category] || "#eee" }}
           >
             {note.category}
           </span>
           {note.date}
         </p>
 
-        <h2 style={{ marginTop: "8px", marginBottom: "16px", fontSize: "20px", height: "50px" }}>
+        <h2 className="note-card-title">
           {note.title}
         </h2>
 
-        <p style={{ margin: 0, height: "70px" }}>{note.summary}</p>
+        <p className="note-card-summary">{note.summary}</p>
       </article>
     </Link>
   );

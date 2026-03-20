@@ -2,30 +2,21 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <header
-      style={{
-        padding: "16px 24px",
-        backgroundColor: "#fff",
-        borderBottom: "1px solid #ddd",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
-      }}
-    >
-      <nav style={{ display: "flex", gap: "16px" }}>
+    <header className="site-header">
+      <nav className="site-nav">
         <Link to="/">Home</Link>
         <Link to="/notes">Notes</Link>
         <Link to="/projects">Projects</Link>
         <Link to="/about">About</Link>
       </nav>
 
-      <div style={{ display: "flex"}}>
+      <div className="site-brand-group">
         <a
-        href="https://x.com/naolabs2026"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ display: "flex", alignItems: "center", paddingRight: "10px" }}
-      >
+          href="https://x.com/naolabs2026"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="site-x-link"
+        >
           {/* Xアイコン */}
           <svg
             width="18"
@@ -37,16 +28,15 @@ export default function Header() {
           </svg>
         </a>
 
-        <Link to="/" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <Link to="/" className="site-brand-link">
           <span>なおらぼ</span>
           <img
-            style={{ height: "40px" }}
+            className="site-brand-logo"
             src="/naolabs-main.PNG"
             alt="naolab-main"
           />
         </Link>
       </div>
-      
     </header>
   );
 }

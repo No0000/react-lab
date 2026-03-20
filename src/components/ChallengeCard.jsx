@@ -10,33 +10,15 @@ export default function ChallengeCard({ challenge }) {
   );
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        border: "1px solid #ddd",
-        borderRadius: "14px",
-        padding: "14px",
-        width: "260px",
-        fontSize: "14px",
-      }}
-    >
+    <div className="challenge-card">
       <h3>{challenge.name}</h3>
       {/* 時間 */}
-      <div style={{ marginBottom: "6px", color: "#555" }}>
+      <div className="challenge-card-hours">
         {challenge.totalHours}h / {challenge.goalHours}h
       </div>
 
       {/* プログレスバー */}
-      <div
-        style={{
-          width: "100%",
-          height: "8px",
-          background: "#eee",
-          borderRadius: "999px",
-          overflow: "hidden",
-          marginBottom: "6px",
-        }}
-      >
+      <div className="challenge-card-progress">
         <div
           style={{
             width: `${progress}%`,
@@ -47,20 +29,12 @@ export default function ChallengeCard({ challenge }) {
       </div>
 
       {/* 残り */}
-      <div style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+      <div className="challenge-card-remaining">
         残り {remainingHours}h
       </div>
 
       {/* コメント */}
-      <div
-        style={{
-          fontSize: "12px",
-          color: "#666",
-          lineHeight: 1.4,
-        }}
-      >
-        {challenge.comment}
-      </div>
+      <div className="challenge-card-comment">{challenge.comment}</div>
     </div>
   );
 }

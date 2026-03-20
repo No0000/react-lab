@@ -11,6 +11,8 @@ body {
   font-family: sans-serif;
   background-color: #f7f7f7;
   color: #222;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 a {
@@ -40,6 +42,45 @@ button {
   padding: 24px;
 }
 
+.site-header {
+  padding: 16px 24px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-brand-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.site-x-link {
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.site-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.site-brand-logo {
+  height: 40px;
+}
+
 /* ===== Notes List ===== */
 
 .notes-grid {
@@ -58,6 +99,33 @@ button {
 
 .note-card:hover {
   transform: translateY(-2px);
+}
+
+.note-card-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.note-card-category {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.note-card-title {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  font-size: 20px;
+  min-height: 50px;
+  line-height: 1.4;
+}
+
+.note-card-summary {
+  margin: 0;
+  min-height: 70px;
 }
 
 /* ===== Category Buttons ===== */
@@ -80,6 +148,22 @@ button {
   background-color: #222;
   color: #fff;
   border-color: #222;
+}
+
+.notes-search-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+.notes-filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 /* ===== Back Button ===== */
@@ -278,6 +362,54 @@ button {
   font-weight: 700;
 }
 
+.challenge-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  padding: 14px;
+  width: 260px;
+  font-size: 14px;
+}
+
+.challenge-card-hours {
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.challenge-card-progress {
+  width: 100%;
+  height: 8px;
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.challenge-card-remaining {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.challenge-card-comment {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.about-profile {
+  display: flex;
+}
+
+.about-profile-text {
+  padding-right: 40px;
+}
+
+.about-profile-image {
+  height: 150px;
+  border-radius: 100%;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 1100px) {
@@ -303,5 +435,180 @@ button {
 
   .note-detail {
     padding: 16px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-nav {
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .site-brand-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .site-brand-logo {
+    height: 34px;
+  }
+
+  .container {
+    padding: 18px 16px;
+  }
+
+  .note-page {
+    padding: 16px;
+  }
+
+  .note-detail {
+    border-radius: 16px;
+    padding: 14px 16px;
+  }
+
+  .note-card {
+    padding: 22px 20px;
+    max-height: none;
+  }
+
+  .note-card-title {
+    min-height: auto;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .note-card-summary {
+    min-height: auto;
+    font-size: 14px;
+  }
+
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .notes-search-input {
+    font-size: 16px;
+    padding: 11px 12px;
+    margin-bottom: 18px;
+  }
+
+  .category-button {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .markdown-body {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .markdown-body h1 {
+    font-size: 28px;
+    line-height: 1.3;
+  }
+
+  .markdown-body h2 {
+    font-size: 22px;
+    line-height: 1.35;
+  }
+
+  .markdown-body h3 {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .markdown-body pre {
+    margin: 16px 0;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .article-link-card {
+    padding: 16px;
+    margin: 20px 0;
+  }
+
+  .article-link-title {
+    font-size: 18px;
+  }
+
+  .challenge-card {
+    width: 100%;
+  }
+
+  .about-profile {
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .about-profile-text {
+    padding-right: 0;
+  }
+
+  .about-profile-image {
+    height: 110px;
+  }
+}
+
+@media (max-width: 420px) {
+  body {
+    font-size: 15px;
+  }
+
+  .site-header {
+    padding: 12px 14px;
+  }
+
+  .site-nav {
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .container,
+  .note-page {
+    padding: 14px;
+  }
+
+  .note-detail {
+    padding: 14px;
+  }
+
+  .back-button {
+    margin: 24px 0;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .note-toc {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .note-toc a {
+    font-size: 13px;
+  }
+
+  .toc-item-sub {
+    margin-left: 10px;
+  }
+
+  .toc-item-sub-deep {
+    margin-left: 18px;
+  }
+
+  .about-profile {
+    gap: 14px;
+  }
+
+  .about-profile-image {
+    height: 84px;
   }
 }
