@@ -1,0 +1,9 @@
+.displaySize {
+  position: relative;
+  overflow: hidden;
+  width: min(1080px, 100vw);
+  aspect-ratio: 16 / 9;
+  margin: 50px auto 0;
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  background: #ffffff;
+}

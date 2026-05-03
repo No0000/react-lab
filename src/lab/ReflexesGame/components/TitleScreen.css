@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c&family=Yusei+Magic&display=swap');
+
+.titleScreen {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  padding: 40px 0 0 44px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, #fff8d9 0, #fff8d9 18%, transparent 18.5%),
+    linear-gradient(135deg, #fffdf6 0%, #fff0f5 48%, #ffe8ef 100%);
+}
+
+.titleScreenPanel {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: start;
+  gap: 10px;
+  padding: 28px 30px;
+  border: 3px solid #2d1b1f;
+  border-radius: 34px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 0 rgba(255, 180, 195, 0.75);
+  backdrop-filter: blur(4px);
+  text-align: center;
+}
+
+.titleScreenPanel h1,
+.titleScreenPanel h2 {
+  margin: 0;
+}
+
+.titleScreenPanel h2 {
+  font-family: "Yusei Magic", sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.1;
+  color: #8e4c61;
+}
+
+.titleScreenPanel button {
+  width: min(220px, 100%);
+  margin-top: 6px;
+  padding: 14px 20px;
+  border: 3px solid #2d1b1f;
+  border-radius: 999px;
+  font-family: "Yusei Magic", sans-serif;
+  font-size: 22px;
+  color: #2d1b1f;
+  background: linear-gradient(180deg, #fff8fb 0%, #ffd6e2 100%);
+  box-shadow: 0 8px 0 #f3aabd;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.titleScreenPanel button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 11px 0 #f3aabd;
+  background: linear-gradient(180deg, #fffefc 0%, #ffc7d7 100%);
+}
+
+.titleScreenPanel button:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #f3aabd;
+}
+
+.titleScreenImageArea {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+}
+
+.titleImg {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  z-index: 1;
+}
+
+.titleText {
+  font-family: "Dela Gothic One", sans-serif;
+  font-size: 60px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  color: #ff7590;
+  text-shadow: 4px 4px 0 #fff7fb;
+}
+
+@media (max-width: 900px) {
+  .titleScreen {
+    grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+    padding: 32px 0 0 28px;
+  }
+
+  .titleScreenPanel {
+    padding: 24px;
+  }
+
+  .titleScreenPanel h2 {
+    font-size: 22px;
+  }
+
+  .titleText {
+    font-size: 48px;
+  }
+
+  .titleScreenPanel button {
+    width: 100%;
+    font-size: 20px;
+  }
+}
