@@ -82,9 +82,10 @@ export default function TitleScreen({ onStart }) {
           <button onMouseEnter={playHoverSound}>ルール</button>
           <button onMouseEnter={playHoverSound}>クレジット</button>
         </div>
-        <div>
-          <p>音量</p>
+        <div className="volumePanel">
+          <p className="volume">音量：{Math.floor(volume * 100)}</p>
           <input
+            className="inputRange"
             type="range"
             min={0}
             max={1}

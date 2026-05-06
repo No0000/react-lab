@@ -1,77 +1,162 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import "./GameScreen.css";
 
-// ゲーム画面
+const ROUND_COMMENTS = [
+  "準備はいいかしら？よければ画面をクリックしなさい。",
+  "調子はどうかしら？画面をクリックすれば次の計測が始まりますわ。",
+  "まだまだいけますわよね？画面をクリックしなさい。",
+  "あなたならもっと上を目指せるはずですわ！",
+  "限界を越えるのです！",
+];
+
 export default function GameScreen({ onStart }) {
-  const [status, setStatus] = useState("start");
-  const [buttonStatus, setButtonStatus] = useState("start");
-  const [time, setTime] = useState(0);
-  const [startTime, setStartTime] = useState(null);
-  const [reactionTime, setReactionTime] = useState(null);
-  const [randTime, setRandTime] = useState(() => Math.floor(Math.random() * 7000 + 3000));
+  const [status, setStatus] = useState("idle");
+  const [comment, setComment] = useState(ROUND_COMMENTS[0]);
   const [roundCount, setRoundCount] = useState(1);
-  const [resultTime, setResultTime] = useState(0);
+  const [reactionTime, setReactionTime] = useState(null);
+  const [resultLabel, setResultLabel] = useState("");
+  const readyAtRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const frameRef = useRef(null);
 
-  const [allTime, setAllTime] = useState([]);
-  const timeRecode = [];
-  
+  useEffect(() => {
+    return () => {
+      clearTimeout(timeoutRef.current);
+      cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
 
-  function handleNextRound() {
+  function scheduleReady() {
+    const waitTime = Math.floor(Math.random() * 1500) + 3000;
 
-  }
-
-  function handleStart() {
-    setStatus("waiting");
-    setReactionTime(null);
-    setButtonStatus("stop");
-
-    setTimeout(() => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
       setStatus("ready");
-      setStartTime(Date.now());
-    }, randTime);
+      setComment("今ですわ！");
+
+      // Record the start time after the ready UI has actually painted.
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = requestAnimationFrame(() => {
+          readyAtRef.current = performance.now();
+        });
+      });
+    }, waitTime);
   }
 
-  // ストップボタン
-  function handleStop() {
-    const endTime = Date.now();
-    const result = Math.floor(endTime - startTime);
-    setReactionTime(result);
-    setResultTime(result - randTime);
-    setAllTime([...allTime, resultTime]);
+  function startRound() {
+    setStatus("waiting");
+    setComment("まだですわ");
+    setReactionTime(null);
+    setResultLabel("");
+    readyAtRef.current = null;
+    scheduleReady();
+  }
+
+  function handleTooEarly() {
+    clearTimeout(timeoutRef.current);
+    cancelAnimationFrame(frameRef.current);
+    setStatus("miss");
+    setReactionTime(null);
+    setResultLabel("");
+    readyAtRef.current = null;
+    setComment("お手つきですわ...もう一度画面をクリックしなさい！");
+  }
+
+  function handleSuccess() {
+    if (readyAtRef.current === null) {
+      return;
+    }
+
+    const clickedAt = performance.now();
+    const elapsed = clickedAt - readyAtRef.current; // 経過時間
+    const elapsedSeconds = (elapsed / 1000).toFixed(3); // わかりやすい時間にまとめる
+
+    clearTimeout(timeoutRef.current);
+    cancelAnimationFrame(frameRef.current);
     setStatus("result");
-    setButtonStatus("next");
+    setReactionTime(elapsed);
+    setResultLabel(`${elapsedSeconds}秒後にクリックしましたわ！`);
+    setComment("なかなかの反応速度ですわね！");
   }
 
-  // もう一回ボタン
-  function handleReset() {
-    setStatus("start");
-    setRandTime(Math.floor(Math.random() * 7000 + 3000));
-    setTime(0);
-    setRoundCount(prev => prev + 1);
-    setButtonStatus("start");
+  // 5回計測したらリザルト画面へ
+  function goToNextRound() {
+    if (roundCount >= 5) {
+      onStart();
+      return;
+    }
+
+    const nextRound = roundCount + 1;
+    setRoundCount(nextRound);
+    setStatus("idle");
+    setReactionTime(null);
+    setResultLabel("");
+    readyAtRef.current = null;
+    setComment(
+      ROUND_COMMENTS[nextRound - 1] ??
+        "画面をクリックすれば次の計測が始まりますわ。"
+    );
+  }
+
+  function handlePanelPress() {
+    if (status === "idle" || status === "miss") {
+      startRound();
+      return;
+    }
+
+    if (status === "waiting") {
+      handleTooEarly();
+      return;
+    }
+
+    if (status === "ready") {
+      handleSuccess();
+      return;
+    }
+
+    if (status === "result") {
+      goToNextRound();
+    }
   }
 
   function handleResult() {
-
+    onStart();
   }
 
-  const startButton = <button onClick={handleStart}>スタート</button>;
-  const stopButton = <button onClick={handleStop}>ストップ</button>;
-  const nextButton = <button onClick={handleReset}>もう一回！</button>;
   return (
-    <div>
-      <div>
-        <p>{roundCount}回目</p>
-        <p>{String(randTime / 1000)}秒でストップボタンを押してね</p>
-        {buttonStatus === "start" ? startButton : buttonStatus === "stop" ? stopButton : buttonStatus === "next" ? nextButton : ""}
-        <button onClick={handleResult}>やめる</button>
+    <div className="gameScreen">
+      <div className="gameHeader">
+        <p className="gameRound">{roundCount}回目</p>
+        <button className="gameExitButton" onClick={handleResult}>
+          やめる
+        </button>
+      </div>
 
-        <p>{status}</p>
-        <p>{reactionTime}</p>
-        <p>差：{resultTime / 1000}秒</p>
-        <p>平均タイム:{allTime.length > 1 ? allTime.reduce((acc, cur) => acc + cur, 0) / allTime.length : ""}</p>
-        <p>{allTime.map((time, index) => (
-          <p key={index}>averaga:{time / 1000}秒</p>
-        ))}</p>
+      <div
+        className={`gamePanel gamePanel-${status}`}
+        onPointerDown={handlePanelPress}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault(); // Enterキーを押した際に画面がしたにスクロールする標準機能をキャンセルする
+            handlePanelPress();
+          }
+        }}
+      >
+        {status === "ready" && <div className="gameFlash" aria-hidden="true" />}
+        <p className="gameStatus">{comment}</p>
+        {status === "result" && (
+          <p className="gameResult">{resultLabel}</p>
+        )}
+        {reactionTime !== null && (
+          <p className="gameMs">{Math.round(reactionTime)} ms</p>
+        )}
+        <p className="gameHint">
+          {status === "result"
+            ? "もう一度クリックすると次へ進みますわ。"
+            : "このパネルをクリックして進めてくださいまし。Enterキーでも動きますわ。"}
+        </p>
       </div>
     </div>
   );
