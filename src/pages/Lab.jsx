@@ -5,8 +5,8 @@
 // import Test from "../lab/multidimensionalArrayPractice";
 // import Test from "../lab/JankenGame/App";
 // import Test from "../lab/ReflexesGame/App";
-import Test from "../lab/ToDo/App";
+import TodoApp from "../lab/ToDo/App";
 
 export default function Lab() {
-  return <Test />
+  return <TodoApp />
 }

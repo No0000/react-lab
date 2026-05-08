@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 
-export default function App() {
+export default function TodoApp() {
   return (
     <div>
       <Routes>
