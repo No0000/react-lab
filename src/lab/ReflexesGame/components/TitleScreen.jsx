@@ -1,24 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "./TitleScreen.css";
 import bgm from "../assets/sound/bgm/titleBGM.mp3";
 import hoverSE from "../assets/sound/se/buttonCursor.mp3";
 import titleImg from "../assets/images/title.PNG";
 
-export default function TitleScreen({ onStart }) {
+export default function TitleScreen({ onStart, volume, onVolumeChange }) {
   const bgmAudioRef = useRef(null);
   const hoverAudioRef = useRef(null);
-  const volumeRef = useRef(0.3);
-  const [volume, setVolume] = useState(0.3);
+  const volumeRef = useRef(volume);
 
   useEffect(() => {
     const audio = new Audio(bgm);
     const hoverAudio = new Audio(hoverSE);
 
     audio.loop = true;
-    audio.volume = volume;
-    audio.muted = volume === 0;
-    hoverAudio.volume = volume;
-    hoverAudio.muted = volume === 0;
+    audio.volume = volumeRef.current;
+    audio.muted = volumeRef.current === 0;
+    hoverAudio.volume = volumeRef.current;
+    hoverAudio.muted = volumeRef.current === 0;
     hoverAudio.preload = "auto";
 
     bgmAudioRef.current = audio;
@@ -58,7 +57,7 @@ export default function TitleScreen({ onStart }) {
   }, [volume]);
 
   function handleVolume(e) {
-    setVolume(Number(e.target.value));
+    onVolumeChange(Number(e.target.value));
   }
 
   function playHoverSound() {
