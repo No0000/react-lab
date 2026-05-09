@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 function List({allTasks, setAllTasks, titleName, isCheck}) {
   function handleChange(doneId) {
     setAllTasks(allTasks.map((item) => {
@@ -37,7 +39,23 @@ function List({allTasks, setAllTasks, titleName, isCheck}) {
   );
 }
 
-export default function TaskList({allTasks, setAllTasks}) {
+export default function TaskList({allTasks, setAllTasks, data, setData}) {
+  useEffect(() => {
+    const doneCheck = allTasks.length > 0 &&  allTasks.every((item) => item.done === true); // Object.entriesはオブジェクトとキーのペアに変換するメソッド。使っても動くが配列ならeveryにする。また、タスクが0件の時にtrueをeveryは返してしまうため、それを防ぐためにlenghtで0ならfalseを返させる。
+
+    if (doneCheck === true) {
+      const now = new Date();
+      setData(prev => 
+        ({
+          ...prev,
+          streak: prev.streak + 1,
+          lastCompleted: now.toLocaleString("ja-JP"),
+        })
+      );
+      console.log(data);
+    }
+  }, [allTasks, data, setData]);
+
   return (
     <div>
       <h1>TaskList</h1>
