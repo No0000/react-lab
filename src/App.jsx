@@ -23,7 +23,7 @@ export default function App() {
           <Route path="/notes/:slug" element={<NoteDetail />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/about" element={<About />} />
-          <Route path="/lab" element={<Lab />} />
+          <Route path="/lab/*" element={<Lab />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

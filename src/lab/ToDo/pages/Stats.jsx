@@ -1,11 +1,11 @@
 import StreakCard from "../components/StreakCard";
 import TrustMeter from "../components/TrustMeter";
 
-export default function Stats() {
+export default function Stats({allTasks, setAllTasks, data, setData}) {
   return (
     <div>
-      <StreakCard />
-      <TrustMeter />
+      <StreakCard data={data} />
+      <TrustMeter data={data} />
     </div>
   );
 }

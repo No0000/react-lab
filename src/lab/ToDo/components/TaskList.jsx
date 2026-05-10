@@ -43,16 +43,29 @@ export default function TaskList({allTasks, setAllTasks, data, setData}) {
   useEffect(() => {
     const doneCheck = allTasks.length > 0 &&  allTasks.every((item) => item.done === true); // Object.entriesはオブジェクトとキーのペアに変換するメソッド。使っても動くが配列ならeveryにする。また、タスクが0件の時にtrueをeveryは返してしまうため、それを防ぐためにlenghtで0ならfalseを返させる。
 
-    if (doneCheck === true) {
-      const now = new Date();
+    if (doneCheck) {
+      const today = new Date();
+      // data.lastCompletedにデータが入っていれば変換したデータを返す。そうでなければnull
+      const lastCompleted = data.lastCompleted ? new Date(data.lastCompleted).toDateString() : null;
+
+      // 今日が既に完了済みなら何もしない
+      if (today === lastCompleted) return;
+
+      // 昨日完了していたかチェック
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1); // getDate -> 日にちを返す。-1しているので前日 setDate -> 数字を置き変え暦上正しくなるよう解釈する 0なら先月の最終日になる 5/1 -> 4/30
+      const isConsecutive = lastCompleted === yesterday.toLocaleDateString(); // toLocaleDateString -> 日時のフォーマット
+
+      const newStreak = isConsecutive ? data.streak + 1 : 1; // data.streak + 1は書き換えてはいない。
+
       setData(prev => 
         ({
           ...prev,
-          streak: prev.streak + 1,
-          lastCompleted: now.toLocaleString("ja-JP"),
+          streak: newStreak, 
+          lastCompleted: new Date().toISOString(), // 現在時刻を返す 例：2026-05-10T02:17:54.072Z
+          trust: isConsecutive > 1 ? prev.trust + newStreak :  prev.trust - 1,  // 連続記録が途絶えたら-1する。isConsectiveには続いているかのtrue falseが入っているのでそれを使う。
         })
       );
-      console.log(data);
     }
   }, [allTasks, data, setData]);
 
