@@ -5,10 +5,17 @@ import AddTaskForm from "../components/AddTaskForm";
 
 export default function Home({allTasks, setAllTasks, data, setData}) {
   return (
-    <div>
-      <CharacterPanel data={data} />
+    <div className="bg-white w-full max-w-sm">
       <WeatherWidget />
-      <TaskList allTasks={allTasks} setAllTasks={setAllTasks} data={data} setData={setData} />
+      <div className="flex gap-2 border border-sky-200 rounded-xl">
+        <div className="w-1/2">
+          <CharacterPanel data={data} />
+        </div>
+        <div className="w-1/2 bg-sky-300/75">
+          <TaskList allTasks={allTasks} setAllTasks={setAllTasks} data={data} setData={setData} />
+        </div>
+
+      </div>
       <AddTaskForm allTasks={allTasks} setAllTasks={setAllTasks} />
     </div>
   );

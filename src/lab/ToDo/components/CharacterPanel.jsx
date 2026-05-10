@@ -12,7 +12,8 @@ export default function CharacterPanel({data}) {
     <div>
       <p>信頼度：{data.trust}</p>
       <p>{getSerif(data.trust)}</p>
-      <img 
+      <img
+        className="w-full h-auto object-cover"
         src={charaImage} 
         alt="キャラクターイメージ" 
       />
