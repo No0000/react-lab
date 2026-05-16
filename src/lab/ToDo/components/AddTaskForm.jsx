@@ -12,9 +12,10 @@ export default function AddTaskForm({ allTasks, setAllTasks, data }) {
 
   function handleClick() {
     if (!task.trim()) return;
-    const newTask = { id: Date.now(), name: task, done: false };
+    const newTask = { id: Date.now(), name: task, done: false, tags: selectedTags };
     setAllTasks([...allTasks, newTask]);
     setTask("");
+    setSelectedTags([]);
   }
 
   return (

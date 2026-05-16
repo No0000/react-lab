@@ -15,7 +15,7 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
   }
 
   return (
-    <div className="relative w-full max-w-sm min-h-screen flex flex-col"
+    <div className="relative w-full min-h-screen flex flex-col"
       style={{ background: "#1a1a22", border: "1px solid #3a3a4a" }}>
 
       {/* 天気：左上 */}
@@ -53,7 +53,7 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
 
       {/* ボトムメニュー */}
       <BottomMenu />
-      
+
     </div>
   );
 }

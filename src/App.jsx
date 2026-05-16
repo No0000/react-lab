@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -12,9 +12,12 @@ import NotFound from "./pages/NotFound";
 import Lab from "./pages/Lab";
 
 export default function App() {
+  const lacation = useLocation();
+  const isTodo = lacation.pathname.startsWith("/lab/todo");
+
   return (
     <div className="layout">
-      <Header />
+      {!isTodo && <Header />}
 
       <main className="main">
         <Routes>
@@ -28,7 +31,7 @@ export default function App() {
         </Routes>
       </main>
 
-      <Footer />
+      {!isTodo && <Footer />}
     </div>
   );
 }
