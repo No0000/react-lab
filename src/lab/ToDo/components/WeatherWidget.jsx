@@ -37,6 +37,14 @@ export default function WeatherWidget() {
     );
   }
 
+  if (error) {
+    return (
+      <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid #4a4a5a", padding: "6px 10px" }}>
+        <span style={{ fontSize: "11px", color: "#6a6a7a" }}>天気取得失敗</span>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: "2px", background: "rgba(255,255,255,0.05)", border: "1px solid #4a4a5a", padding: "6px 10px" }}>
       <span style={{ fontSize: "11px", color: "#9a9aaa" }}>{weather.weather[0].description}</span>
