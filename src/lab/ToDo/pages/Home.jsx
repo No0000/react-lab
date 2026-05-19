@@ -20,7 +20,7 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
 
       {/* キャラクター */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none" 
-        style={{ zIndex: 0, top: "30px", bottom: "20px" }}>
+        style={{ zIndex: 0, /* top: "30px", bottom: "20px"  */}}>
         <CharacterPanel data={data} />
       </div>
 
