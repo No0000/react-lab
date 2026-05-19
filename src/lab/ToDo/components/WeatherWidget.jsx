@@ -1,31 +1,61 @@
 import { useState, useEffect } from "react";
 
 export default function WeatherWidget() {
-  const apikey = import.meta.env.VITE_WEATHER_API_KEY;
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(async (position) => { // ブラウザの位置情報取得
-      const { latitude, longitude } = position.coords; // 緯度、経度
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}&units=metric&lang=ja`;
+    // APIキーが未設定の場合は早期リターン（本番環境でVercelに環境変数を追加する必要がある）
+    const apikey = import.meta.env.VITE_WEATHER_API_KEY;
+    if (!apikey) {
+      setError("APIキー未設定");
+      setLoading(false);
+      return;
+    }
 
-      // dataの中にはオブジェクトとして天気や場所に関する情報が入っている
-      fetch(url)
-      .then(res => {
-        if (!res.ok) throw new Error("API失敗");
-        return res.json();
-      })
-      .then(data => {
-        setWeather(data);
+    // 位置情報が使用できない環境への対応
+    if (!navigator.geolocation) {
+      setError("位置情報非対応");
+      setLoading(false);
+      return;
+    }
+
+    // ブラウザの位置情報取得
+    navigator.geolocation.getCurrentPosition(
+      // ① 成功コールバック
+      (position) => {
+        const { latitude, longitude } = position.coords; // 緯度、経度
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}&units=metric&lang=ja`;
+
+        // dataの中にはオブジェクトとして天気や場所に関する情報が入っている
+        fetch(url)
+          .then(res => {
+            if (!res.ok) throw new Error(`API失敗: ${res.status}`);
+            return res.json();
+          })
+          .then(data => {
+            setWeather(data);
+            setLoading(false);
+          })
+          .catch(() => {
+            setError("天気情報を取得できませんでした");
+            setLoading(false);
+          });
+      },
+      // ② エラーコールバック（位置情報の取得失敗・拒否・タイムアウト時）
+      (err) => {
+        const messages = {
+          1: "位置情報の許可が必要です", // PERMISSION_DENIED
+          2: "位置情報を取得できませんでした", // POSITION_UNAVAILABLE
+          3: "位置情報の取得がタイムアウトしました", // TIMEOUT
+        };
+        setError(messages[err.code] ?? "位置情報エラー");
         setLoading(false);
-      })
-      .catch(() => {
-        setError("転記情報を取得できませんでした");
-        setLoading(false);
-      }); // 天気情報を取得する前に描画がされてしまうため、weatherはnullのままでエラーが出る。取得が終わったらfalseにして表示させるようにする。
-    })
+      },
+      // ③ オプション
+      { timeout: 10000, maximumAge: 300000 }
+    );
   }, []);
 
   if (loading) {
@@ -39,7 +69,7 @@ export default function WeatherWidget() {
   if (error) {
     return (
       <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid #4a4a5a", padding: "6px 10px" }}>
-        <span style={{ fontSize: "11px", color: "#6a6a7a" }}>天気取得失敗</span>
+        <span style={{ fontSize: "11px", color: "#6a6a7a" }}>{error}</span>
       </div>
     );
   }
