@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { useState, useEffect } from "react";
 
 export default function WeatherWidget() {
@@ -12,14 +13,19 @@ export default function WeatherWidget() {
       const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}&units=metric&lang=ja`;
 
       // dataの中にはオブジェクトとして天気や場所に関する情報が入っている
-      fetch(url).then(res => res.json()).then(data => {
+      fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error("API失敗");
+        return res.json();
+      })
+      .then(data => {
         setWeather(data);
-        setLoading(false); // 天気情報を取得する前に描画がされてしまうため、weatherはnullのままでエラーが出る。取得が終わったらfalseにして表示させるようにする。
-      });
-/*       if (!response.ok) {
-        setError("取得できませんでした");
-        return;
-      } */
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("転記情報を取得できませんでした");
+        setLoading(false);
+      }); // 天気情報を取得する前に描画がされてしまうため、weatherはnullのままでエラーが出る。取得が終わったらfalseにして表示させるようにする。
     })
   }, []);
 

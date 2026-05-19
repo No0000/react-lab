@@ -9,11 +9,12 @@ export default function CharacterPanel({ data }) {
 
   return (
     <div className="absolute inset-0 flex items-end justify-center pointer-events-none"
-      style={{ zIndex: 0 }}>
+      style={{ zIndex: 0, bottom: "60px" }}>
       <img
         src={charaImage}
         alt="キャラクターイメージ"
         className="h-full w-auto object-contain"
+        style={{ maxHeight: "100%" }}
       />
     </div>
   );

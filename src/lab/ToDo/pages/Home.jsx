@@ -16,17 +16,20 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
 
   return (
     <div className="relative w-full min-h-screen flex flex-col"
-      style={{ background: "#1a1a22", border: "1px solid #3a3a4a" }}>
+      style={{ background: "#38c4b4", border: "1px solid #3a3a4a" }}>
+
+      {/* キャラクター */}
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none" 
+        style={{ zIndex: 0, top: "30px", bottom: "20px" }}>
+        <CharacterPanel data={data} />
+      </div>
 
       {/* 天気：左上 */}
       <div className="p-3 pb-0" style={{ zIndex: 1, position: "relative" }}>
         <WeatherWidget />
       </div>
 
-      {/* キャラクター */}
-      <div className="flex-1" style={{ position: "relative" }}>
-        <CharacterPanel data={data} />
-      </div>
+      <div className="flex-1" />    
 
       {/* セリフ＋トップタスク */}
       <div className="px-3 pb-3 flex flex-col gap-2" style={{ zIndex: 1, position: "relative" }}>
