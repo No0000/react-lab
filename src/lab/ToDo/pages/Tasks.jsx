@@ -11,8 +11,8 @@ export default function Tasks({ allTasks, setAllTasks, data, setData }) {
   const navigate = useNavigate();
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col"
-      style={{ background: "#1a1a22" }}>
+    <div className="relative w-full flex flex-col"
+      style={{ background: "#1a1a22", minHeight: "100vh" }}>
 
       <div className="px-4 py-4" style={{ borderBottom: "1px solid #3a3a4a" }}>
         <h1 style={{ color: "#e8e0cc", fontSize: "16px", fontWeight: 500 }}>タスク</h1>
