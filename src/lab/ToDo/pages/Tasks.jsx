@@ -12,7 +12,7 @@ export default function Tasks({ allTasks, setAllTasks, data, setData }) {
 
   return (
     <div className="relative w-full flex flex-col"
-      style={{ background: "#1a1a22", minHeight: "100vh" }}>
+      style={{ background: "#1a1a22", minHeight: "100vh", paddingBottom: "60px" }}>
 
       <div className="px-4 py-4" style={{ borderBottom: "1px solid #3a3a4a" }}>
         <h1 style={{ color: "#e8e0cc", fontSize: "16px", fontWeight: 500 }}>タスク</h1>

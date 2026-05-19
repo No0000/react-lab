@@ -13,7 +13,15 @@ export default function BottomMenu() {
 
   return (
     <div className="grid grid-cols-4 gap-0"
-      style={{ background: "#141418", borderTop: "1px solid #3a3a4a", zIndex: 1, position: "relative" }}>
+      style={{
+        position: "fixed", 
+        bottom: 0, 
+        left: 0, 
+        right: 0,
+        background: "#141418", 
+        borderTop: "1px solid #3a3a4a", 
+        zIndex: 10 
+      }}>
       {items.map((item) => (
         <button key={item.label}
           onClick={() => navigate(item.path)}
