@@ -16,23 +16,30 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
 
   return (
     <div className="relative w-full flex flex-col"
-      style={{ background: "#272f2e", border: "1px solid #3a3a4a", minHeight: "100vh ", paddingBottom: "60px"}}>
+      style={{
+        height: "100dvh",  // minHeightではなくheight
+        display: "flex", 
+        flexDirection: "column",
+        background: "#1a1a22",
+        overflow: "hidden"
+      }}>
+
+      {/* 天気：左上 */}
+      <div className="p-3 pb-0" style={{ zIndex: 1, position: "relative", flexShrink: 0 }}>
+        <WeatherWidget />
+      </div>
 
       {/* キャラクター */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none" 
-        style={{ zIndex: 0, top: "30px", bottom: "20px" }}>
+        style={{ zIndex: 0, top: "30px", bottom: "20px", flexShrink: 0 }}>
         <CharacterPanel data={data} />
       </div>
 
-      {/* 天気：左上 */}
-      <div className="p-3 pb-0" style={{ zIndex: 1, position: "relative" }}>
-        <WeatherWidget />
-      </div>
 
       <div className="flex-1" />    
 
       {/* セリフ＋トップタスク */}
-      <div className="px-3 pb-3 flex flex-col gap-2" style={{ zIndex: 1, position: "relative" }}>
+      <div className="px-3 pb-3 flex flex-col gap-2" style={{ zIndex: 1, position: "relative, flexShrink: 0" }}>
 
         {/* セリフ：右寄せ */}
         <div className="self-end px-3 py-1.5"
