@@ -59,14 +59,14 @@ export default function Timer({ allTasks, setAllTasks, data, setData }) {
 
   if (!task) {
     return (
-      <div style={{ background: "#1a1a22", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ position: "fixed", inset: 0, background: "#1a1a22", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ color: "#6a6a7a" }}>タスクが見つかりません</p>
       </div>
     );
   }
 
   return (
-    <div style={{ background: "#1a1a22", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 24px", gap: "32px" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#1a1a22", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", gap: "32px", overflowY: "auto" }}>
 
       {/* タスク名 */}
       <p style={{ color: "#6a6a7a", fontSize: "13px" }}>{task.name}</p>

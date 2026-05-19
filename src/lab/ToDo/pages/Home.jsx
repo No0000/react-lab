@@ -17,8 +17,9 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
   return (
     <div className="relative w-full flex flex-col"
       style={{
-        height: "100dvh",  // minHeightではなくheight
-        display: "flex", 
+        position: "fixed",
+        inset: 0,
+        display: "flex",
         flexDirection: "column",
         background: "#1a1a22",
         overflow: "hidden"
@@ -39,7 +40,7 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
       <div className="flex-1" />    
 
       {/* セリフ＋トップタスク */}
-      <div className="px-3 pb-3 flex flex-col gap-2" style={{ zIndex: 1, position: "relative, flexShrink: 0" }}>
+      <div className="px-3 pb-3 flex flex-col gap-2" style={{ zIndex: 1, position: "relative", flexShrink: 0 }}>
 
         {/* セリフ：右寄せ */}
         <div className="self-end px-3 py-1.5"
