@@ -1,4 +1,3 @@
-import tailwindcss from "@tailwindcss/vite";
 import { useState, useEffect } from "react";
 
 export default function WeatherWidget() {
