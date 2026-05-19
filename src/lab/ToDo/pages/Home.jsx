@@ -15,8 +15,8 @@ export default function Home({ allTasks, setAllTasks, data, setData }) {
   }
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col"
-      style={{ background: "#272f2e", border: "1px solid #3a3a4a" }}>
+    <div className="relative w-full flex flex-col"
+      style={{ background: "#272f2e", border: "1px solid #3a3a4a", minHeight: "100vh "}}>
 
       {/* キャラクター */}
       <div className="absolute inset-0 flex items-end justify-center pointer-events-none" 
