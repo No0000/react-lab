@@ -10,11 +10,11 @@ function useTrust(key) {
       workRecords: [],
       tags: ["勉強", "仕事", "毎日", "買い物"]
     };
-  });
+  }); // データを呼び出す
 
   useEffect(() => {
     localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+  }, [key, value]); // データを保存する
 
   return [value, setValue];
 }

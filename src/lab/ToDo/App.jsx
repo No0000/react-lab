@@ -24,7 +24,7 @@ export default function TodoApp() {
     <Routes>
       <Route path="todo" element={<Home allTasks={allTasks} setAllTasks={setAllTasks} data={data} setData={setData} />} />
       <Route path="todo/tasks" element={<Tasks allTasks={allTasks} setAllTasks={setAllTasks} data={data} setData={setData} />} />
-      <Route path="todo/achievements" element={<Achievements data={data} />} />
+      <Route path="todo/achievements" element={<Achievements allTasks={allTasks} data={data} />} />
       <Route path="todo/settings" element={<Settings />} />
       <Route path="todo/timer/:taskId" element={<Timer allTasks={allTasks} setAllTasks={setAllTasks} data={data} setData={setData} />} />
     </Routes>

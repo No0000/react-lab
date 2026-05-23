@@ -55,7 +55,7 @@ export default function Tasks({ allTasks, setAllTasks, data, setData }) {
         style={{position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 10}}>
         <div
           onClick={(e) => e.stopPropagation()}
-          style={{position: "abusolute", top: "50%", left: "50%", Transform: "translate(-50%, -50%)", background: "#1e1e2a", border: "1px solid 3a3a4a", padding: "20px", width: "280px"}}>
+          style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", background: "#1e1e2a", border: "1px solid 3a3a4a", padding: "20px", width: "280px"}}>
           
           <p style={{color: "#e8e0cc", fontSize: "14px", fontWeight: 500, marginBottom: "12px"}}>タグで絞り込む</p>
 

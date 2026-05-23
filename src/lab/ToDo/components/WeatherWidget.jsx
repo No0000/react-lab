@@ -29,16 +29,16 @@ export default function WeatherWidget() {
         const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}&units=metric&lang=ja`;
 
         // dataの中にはオブジェクトとして天気や場所に関する情報が入っている
-        fetch(url)
-          .then(res => {
-            if (!res.ok) throw new Error(`API失敗: ${res.status}`);
-            return res.json();
+        fetch(url)  // URLにリクエストを送る
+          .then(res => {  // レスポンスが帰ってきたら
+            if (!res.ok) throw new Error(`API失敗: ${res.status}`); // HTTPエラーなら失敗扱いにする
+            return res.json();  // JSONの文字列を変換して次に渡す
           })
-          .then(data => {
-            setWeather(data);
+          .then(data => { // 変換されたデータが返ってきたら
+            setWeather(data); // stateに保存
             setLoading(false);
           })
-          .catch(() => {
+          .catch(() => {  // どこかで失敗したら
             setError("天気情報を取得できませんでした");
             setLoading(false);
           });
