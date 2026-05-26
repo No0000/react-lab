@@ -8,7 +8,8 @@ function useTrust(key) {
       lastCompleted: null,
       trust: 0,
       workRecords: [],
-      tags: ["勉強", "仕事", "毎日", "買い物"]
+      tags: ["勉強", "仕事", "毎日", "買い物"],
+      claimedAchievements: []
     };
   }); // データを呼び出す
 

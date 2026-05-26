@@ -7,24 +7,66 @@ const TAB_LABEL = {
   achieved: "達成",
 };
 
-function AchievementContent({dividend, divisor, achievementName, isConvert = false}) {
+function AchievementContent({dividend, divisor, achievementName, achievementLabel, isConvert = false, isClaimed, isAchieved}) {
   function timeConversion(time) {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
-
     return `${hours}時間${minutes}分${seconds}秒`;
   }
 
+  function handleClick() {
+
+  }
+
+  const isClaimedAndAchieved = !isClaimed && isAchieved;
+
   return (
-    <div style={{height: "50px", border: "1px solid #3a3a4a", padding: "10px 14px", margin: "10px 0"}}>
-      <p>{achievementName}：{isConvert ? `${timeConversion(dividend)} / ${timeConversion(divisor)}` : `${dividend} / ${divisor}`}</p>
-      <div style={{ background: "#3a3a4a", height: "4px", borderRadius: "2px" }}>
+    <div style={{
+      border: `1px solid ${isClaimedAndAchieved ? "#b4a064" : "#3a3a4a"}`,
+      background: isClaimedAndAchieved ? "rgba(180,160,100,0.08)" : "rgba(255,255,255,0.04)",
+      padding: "10px 14px",
+      margin: "10px 0",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div>
+          <p style={{ fontSize: "13px", color: isClaimedAndAchieved ? "#b4a064" : "#e8e0cc", margin: "0 0 2px" }}>
+            {achievementLabel}
+          </p>
+          <p style={{ fontSize: "11px", color: "#6a6a7a", margin: 0 }}>
+            {achievementName}：{isConvert
+              ? `${timeConversion(dividend)} / ${timeConversion(divisor)}`
+              : `${dividend} / ${divisor}`}
+          </p>
+        </div>
+
+        {isClaimedAndAchieved && (
+          <button 
+            style={{
+              padding: "4px 12px",
+              background: "rgba(180,160,100,0.15)",
+              border: "1px solid #b4a064",
+              color: "#b4a064",
+              fontSize: "12px",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            受け取る
+          </button>
+        )}
+
+        {isClaimed && (
+          <span style={{ fontSize: "11px", color: "#6a6a7a" }}>受け取り済み</span>
+        )}
+      </div>
+
+      <div style={{ background: "#3a3a4a", height: "3px", borderRadius: "2px", marginTop: "10px" }}>
         <div style={{
           width: `${Math.min((dividend / divisor) * 100, 100)}%`,
           height: "100%",
-          background: "#b4a064",
-          borderRadius: "2px"
+          background: isClaimedAndAchieved ? "#b4a064" : "#4a4a5a",
+          borderRadius: "2px",
         }} />
       </div>
     </div>
@@ -40,17 +82,18 @@ export default function Achievements({ allTasks, data }) {
   const getCurrentValue = (id) => {
     if (id === "total_tasks") return totalTrue;
     if (id === "streak") return streak;
-    if (id === "total_time") return totalTaskTime;
+    if (id === "total_time") return totalTaskTime; 
   }
 
   // tabに応じてthresholdsを返す関数
-  const getThresholds = (achievement, current) => {
+  const getThresholds = (achievement, current, claimedAchievements) => {
     if (achievementTab === "pending") {
-      const next = achievement.thresholds.find(t => t > current) ?? achievement.thresholds.at(-1);
-      return next ? [next] : []; // 配列で統一して返す
+      const claimed = achievement.thresholds.filter(t => t.value <= current && !claimedAchievements.includes(`${achievement.id}-${t.value}`));
+      const next = achievement.thresholds.find(t => t.value > current) ?? achievement.thresholds.at(-1);
+      return [...claimed, next ? [next] : []].flat(); // 配列で統一して返す
     }
     if (achievementTab === "achieved") {
-      return achievement.thresholds.filter(t => t <= current); // filterは見つからなかった場合[]（からの配列）を返す
+      return achievement.thresholds.filter(t => claimedAchievements.includes(`${achievement.id}-${t.value}`)); // filterは見つからなかった場合[]（からの配列）を返す
     }
     return [];
   };
@@ -79,16 +122,25 @@ export default function Achievements({ allTasks, data }) {
         <div style={{maxHeight: "300px", overflowY: "auto"}}>
           {ACHIEVEMENTS.map((achievement) => {
             const current = getCurrentValue(achievement.id);
-            const thresholds = getThresholds(achievement, current);
-            return thresholds.map((threshold) => (             
-              <AchievementContent
-                key={`${achievement.id}-${threshold}`}
-                dividend={current}
-                divisor={threshold}
-                achievementName={achievement.title}
-                isConvert={achievement.isConvert}
-              />
-            ));
+            const thresholds = getThresholds(achievement, current, data.claimedAchievements);
+            
+            return thresholds.map((threshold) => {
+              const isClaimed = data.claimedAchievements.includes(`${achievement.id}-${threshold.value}`);
+              const isAchieved = current >= threshold.value;
+
+              return (
+                <AchievementContent
+                  key={`${achievement.id}-${threshold.value}`}
+                  dividend={current}
+                  divisor={threshold.value}
+                  achievementName={achievement.title}
+                  achievementLabel={threshold.label}
+                  isConvert={achievement.isConvert}
+                  isClaimed={isClaimed}
+                  isAchieved={isAchieved}
+                />
+              )
+            });
           })}
         </div>
       </div>

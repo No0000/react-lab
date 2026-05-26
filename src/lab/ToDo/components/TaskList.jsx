@@ -1,10 +1,19 @@
 import { useEffect } from "react";
 
-function List({ allTasks, setAllTasks, isCheck, onTaskClick }) {
+function List({ allTasks, setAllTasks, isCheck, onTaskClick, data, setData }) {
   function handleChange(doneId) {
-    setAllTasks(allTasks.map((item) =>
-      item.id === doneId ? { ...item, done: !item.done } : item
-    ));
+    const updatedTasks = allTasks.map(((item) => {
+      if (item.id === doneId) {
+        return {
+          ...item,
+          done: !item.done,
+          completedAt: !item.done ? new Date().toISOString() : null
+        };
+      }
+        return item;
+      }));
+
+    setAllTasks(updatedTasks);
   }
 
   function handleDelete(deleteId) {
@@ -42,11 +51,20 @@ function List({ allTasks, setAllTasks, isCheck, onTaskClick }) {
                 {item.name}
               </span>
             </div>
-            <button
-              onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-              style={{ fontSize: "11px", color: "#6a6a7a" }}>
-              削除
-            </button>
+            {/* 右：日時＋削除ボタンをまとめる */}
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              <div style={{ color: "#6a6a7a", fontSize: "10px", textAlign: "right" }}>
+                <p>追加日：{new Date(item.id).toLocaleString("ja-JP")}</p>
+                {item.done && (
+                  <p>完了日：{new Date(item.completedAt).toLocaleString("ja-JP")}</p>
+                )}
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                style={{ fontSize: "11px", color: "#6a6a7a" }}>
+                削除
+              </button>
+            </div>
           </li>
           <div style={{display: "flex"}}>
             {item.tags?.length > 0 && (
@@ -64,6 +82,7 @@ function List({ allTasks, setAllTasks, isCheck, onTaskClick }) {
 }
 
 export default function TaskList({ allTasks, setAllTasks, data, setData, onTaskClick, selectedFilters }) {
+  // データ呼び出しとallTasksに変更があった場合に起動。done = trueのもののみ。親交度の計算も行う。
   useEffect(() => {
     const doneCheck = allTasks.length > 0 && allTasks.every((item) => item.done === true);
     if (doneCheck) {
@@ -93,7 +112,7 @@ export default function TaskList({ allTasks, setAllTasks, data, setData, onTaskC
     <div style={{ padding: "12px" }}>
       <p style={{ fontSize: "11px", color: "#6a6a7a", marginBottom: "8px" }}>未完了</p>
       <div style={{maxHeight: "240px", overflowY: "auto"}}>
-        <List allTasks={filterdByTag} setAllTasks={setAllTasks} isCheck={false} onTaskClick={onTaskClick ?? (() => {})} />
+        <List allTasks={filterdByTag} setAllTasks={setAllTasks} isCheck={false} onTaskClick={onTaskClick ?? (() => {})} data={data} setData={setData} />
       </div>
 
       <p style={{ fontSize: "11px", color: "#6a6a7a", margin: "16px 0 8px" }}>完了</p>
