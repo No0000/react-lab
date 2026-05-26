@@ -1,5 +1,11 @@
 import BottomMenu from "../components/BottomMenu";
 import { ACHIEVEMENTS } from "../data/achievements";
+import { useState } from "react";
+
+const TAB_LABEL = {
+  pending: "未達成",
+  achieved: "達成",
+};
 
 function AchievementContent({dividend, divisor, achievementName, isConvert = false}) {
   function timeConversion(time) {
@@ -11,7 +17,7 @@ function AchievementContent({dividend, divisor, achievementName, isConvert = fal
   }
 
   return (
-    <div style={{height: "50px", border: "1px solid #3a3a4a", padding: "10px 14px"}}>
+    <div style={{height: "50px", border: "1px solid #3a3a4a", padding: "10px 14px", margin: "10px 0"}}>
       <p>{achievementName}：{isConvert ? `${timeConversion(dividend)} / ${timeConversion(divisor)}` : `${dividend} / ${divisor}`}</p>
       <div style={{ background: "#3a3a4a", height: "4px", borderRadius: "2px" }}>
         <div style={{
@@ -26,6 +32,7 @@ function AchievementContent({dividend, divisor, achievementName, isConvert = fal
 }
 
 export default function Achievements({ allTasks, data }) {
+  const [achievementTab, setAchivementTab] = useState("pending");
   const totalTrue = allTasks.filter(task => task.done === true).length; // 合計true数
   const streak = data.streak; // 連続日数
   const totalTaskTime = data.workRecords.reduce((sum, item) => sum + item.duration, 0); // 総作業時間
@@ -36,47 +43,54 @@ export default function Achievements({ allTasks, data }) {
     if (id === "total_time") return totalTaskTime;
   }
 
+  // tabに応じてthresholdsを返す関数
+  const getThresholds = (achievement, current) => {
+    if (achievementTab === "pending") {
+      const next = achievement.thresholds.find(t => t > current) ?? achievement.thresholds.at(-1);
+      return next ? [next] : []; // 配列で統一して返す
+    }
+    if (achievementTab === "achieved") {
+      return achievement.thresholds.filter(t => t <= current); // filterは見つからなかった場合[]（からの配列）を返す
+    }
+    return [];
+  };
+
   return (
     <div className="relative, w-full flex flex-col"
       style={{ position: "fixed", inset: 0, background: "#1a1a22", overflow: "hidden", color: "#e8e0cc",}}>
       <div style={{padding: "1rem"}}>
         <h1 style={{ color: "#e8e0cc", fontSize: "16px", fontWeight: 500 }}>実績</h1>
-        <p style={{ fontSize: "11px", color: "#6a6a7a", margin: "16px 0 8px" }}>進行中</p>
-        {ACHIEVEMENTS.map((achievement) => {
-          const current = getCurrentValue(achievement.id);
-          const divisor = achievement.thresholds.find(t => t > current) ?? achievement.thresholds.at(-1);
-          return(
-            <AchievementContent
-              key={achievement.id} 
-              dividend={current}
-              divisor={divisor}  
-              achievementName={achievement.title}
-              isConvert={achievement.isConvert}
-            />
-          );
-        })}
-      </div>
-  
-      <div style={{padding: "1rem"}}>
-        <p style={{ fontSize: "11px", color: "#6a6a7a", margin: "16px 0 8px" }}>達成済み</p>
-        {ACHIEVEMENTS.map((achievement) => {
-          const current = getCurrentValue(achievement.id);
-          const divisors = achievement.thresholds.filter(t => t <= current) ?? "なし";
-          console.log(divisors)
-          return (
-            divisors.map((threshold) => {
-              return(
-                <AchievementContent
-                  key={`${achievement.id}-${threshold}`} 
-                  dividend={current}
-                  divisor={threshold}  
-                  achievementName={achievement.title}
-                  isConvert={achievement.isConvert}
-                />
-              );
-            })
-          );
-        })}
+        <div>
+          {Object.entries(TAB_LABEL).map(([key, label]) => ( // オブジェクトなのでmapを直接使えない
+            <button
+              key={key}
+              onClick={() => setAchivementTab(key)} // ボタンを押すと対応したstateになる
+              style={{
+                margin: "0 4px",
+                color: achievementTab === key ? "#b4a064" : "#6a6a7a",
+              }}
+            >
+              {label}
+            </button>
+          ))}
+
+        </div>
+
+        <div style={{maxHeight: "300px", overflowY: "auto"}}>
+          {ACHIEVEMENTS.map((achievement) => {
+            const current = getCurrentValue(achievement.id);
+            const thresholds = getThresholds(achievement, current);
+            return thresholds.map((threshold) => (             
+              <AchievementContent
+                key={`${achievement.id}-${threshold}`}
+                dividend={current}
+                divisor={threshold}
+                achievementName={achievement.title}
+                isConvert={achievement.isConvert}
+              />
+            ));
+          })}
+        </div>
       </div>
 
       <div className="flex-1" />
