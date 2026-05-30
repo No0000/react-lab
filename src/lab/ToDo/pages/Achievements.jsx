@@ -1,22 +1,18 @@
 import BottomMenu from "../components/BottomMenu";
 import { ACHIEVEMENTS } from "../data/achievements";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const TAB_LABEL = {
   pending: "未達成",
   achieved: "達成",
 };
 
-function AchievementContent({dividend, divisor, achievementName, achievementLabel, isConvert = false, isClaimed, isAchieved}) {
+function AchievementContent({dividend, divisor, achievementName, achievementLabel, isConvert = false, isClaimed, isAchieved, onClaim}) {
   function timeConversion(time) {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
     return `${hours}時間${minutes}分${seconds}秒`;
-  }
-
-  function handleClick() {
-
   }
 
   const isClaimedAndAchieved = !isClaimed && isAchieved;
@@ -51,6 +47,7 @@ function AchievementContent({dividend, divisor, achievementName, achievementLabe
               cursor: "pointer",
               flexShrink: 0,
             }}
+            onClick={onClaim}
           >
             受け取る
           </button>
@@ -73,12 +70,15 @@ function AchievementContent({dividend, divisor, achievementName, achievementLabe
   );
 }
 
-export default function Achievements({ allTasks, data }) {
+export default function Achievements({ allTasks, data, setData }) {
   const [achievementTab, setAchivementTab] = useState("pending");
+  const [message, setMessage] = useState("実績が見られるよ。受け取れるものはあるかな？");
+  const timerRef = useRef(null);
+
   const totalTrue = allTasks.filter(task => task.done === true).length; // 合計true数
   const streak = data.streak; // 連続日数
   const totalTaskTime = data.workRecords.reduce((sum, item) => sum + item.duration, 0); // 総作業時間
-
+  console.log(allTasks);
   const getCurrentValue = (id) => {
     if (id === "total_tasks") return totalTrue;
     if (id === "streak") return streak;
@@ -89,7 +89,8 @@ export default function Achievements({ allTasks, data }) {
   const getThresholds = (achievement, current, claimedAchievements) => {
     if (achievementTab === "pending") {
       const claimed = achievement.thresholds.filter(t => t.value <= current && !claimedAchievements.includes(`${achievement.id}-${t.value}`));
-      const next = achievement.thresholds.find(t => t.value > current) ?? achievement.thresholds.at(-1);
+      const next = achievement.thresholds.find(t => 
+        t.value > current && !claimedAchievements.includes(`${achievement.id}-${t.value}`)) ?? null;
       return [...claimed, next ? [next] : []].flat(); // 配列で統一して返す
     }
     if (achievementTab === "achieved") {
@@ -138,11 +139,26 @@ export default function Achievements({ allTasks, data }) {
                   isConvert={achievement.isConvert}
                   isClaimed={isClaimed}
                   isAchieved={isAchieved}
+                  onClaim={() => {
+                    setData(prev => ({
+                      ...prev,
+                      claimedAchievements: [...prev.claimedAchievements, `${achievement.id}-${threshold.value}`],
+                    }));
+                    clearTimeout(timerRef.current);
+                    setMessage("実績を受け取りました！");
+                    timerRef.current = setTimeout(() => {
+                      setMessage("実績が見られるよ。受け取れるものはあるかな？");
+                    }, 3000);
+                  }}
                 />
               )
             });
           })}
         </div>
+      </div>
+
+      <div>
+          <p>{message}</p>
       </div>
 
       <div className="flex-1" />
