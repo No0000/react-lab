@@ -1,4 +1,4 @@
-import charaImage from "../assets/character.PNG";
+import charaImage from "../assets/character.png";
 
 export default function CharacterPanel({ data }) {
   const getSerif = (trust) => {
